@@ -1,0 +1,4 @@
+"0","df |> ggpairs("
+"0","  columns = c(""PIQ"", ""Brain"", ""Weight"", ""Height""),"
+"0","  upper = list(continuous = wrap(""cor"", size= 8))"
+"0",") "

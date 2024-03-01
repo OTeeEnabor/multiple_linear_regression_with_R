@@ -1,0 +1,18 @@
+"0","# load necessary libraries"
+"0","library(ggplot2)"
+"0","library(GGally)"
+"2","Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+"
+"0","library(dplyr)"
+"0","library(tidyverse)"
+"0","library(janitor)"
+"0","library(here)"
+"0","library(gt)"
+"0","library(gtsummary)"
+"0","library(knitr)"
+"0","library(DT)"
+"0","library(maps)"
+"0","library(sf)"
+"0","library(leaflet)"

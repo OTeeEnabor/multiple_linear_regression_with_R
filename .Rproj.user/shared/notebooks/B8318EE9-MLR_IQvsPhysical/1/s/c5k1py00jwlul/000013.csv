@@ -1,0 +1,13 @@
+"0","# read in the dataset"
+"0","df <-  read_table(here::here(""IQ_vs_Physical_Characteristics/data/raw/index.txt""))"
+"2","
+[36m──[39m [1mColumn specification[22m [36m────────────────────────────────────────────────────────────[39m
+cols(
+  PIQ = [32mcol_double()[39m,
+  Brain = [32mcol_double()[39m,
+  Height = [32mcol_double()[39m,
+  Weight = [32mcol_double()[39m
+)
+"
+"0","# show first 6 observations"
+"0","head(df)"
