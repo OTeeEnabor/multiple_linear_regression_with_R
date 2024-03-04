@@ -1,3 +1,5 @@
+"0","#| label: fig-scatter-matrix2"
+"0","#| fig-cap: Scatter-plot matrix showing the pair-wise relationship between the variables of the dataset."
 "0","df |> ggpairs("
 "0","  columns = c(""PIQ"", ""Brain"", ""Weight"", ""Height""),"
 "0","  upper = list(continuous = wrap(""cor"", size= 8))"

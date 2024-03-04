@@ -33,11 +33,11 @@ The researchers collected the following variables for each student in their samp
 
 -   Response (*y*): performance IQ scores (PIQ) from the revised Wechsler Adult Intelligence Scale. The researchers used this as the measure of a person's intelligence.
 
--    **Potential predictor** (x1): Size of the brain based on the count obtained from MRI scans (measured as count per 10 000)
+-   **Potential predictor** (x1): Size of the brain based on the count obtained from MRI scans (measured as count per 10 000)
 
 -   Potential predictor (x2): Height in inches
 
--   Potential predictor (x3): Weight in poinds
+-   Potential predictor (x3): Weight in pounds
 
 ## Load data set
 
@@ -80,17 +80,11 @@ Where:
 
 -   $x_i1 \text{ is the brain size (MRI) of student}_i$
 
--   $
-    xi2 \text{ is the height (Height) of student}_i
-    $
+-   \$xi2 \text{ is the height (Height) of student}\_i\$
 
--   $
-    x_{i3} \text{ is the weight (Weight) of student}_i
-    $
+-   \$ x\_{i3} \text{ is the weight (Weight) of student}\_i \$
 
--   $
-    \epsilon_i \text{ is the independent error term that is normally distributed about 0 with equal variance } \sigma^2
-    $
+-   \$ \epsilon\_i \text{ is the independent error term that is normally distributed about 0 with equal variance } \sigma\^2 \$
 
 |     |
 |-----|
@@ -99,7 +93,7 @@ Where:
 The purpose of doing a regression analysis is usually to answer a question about our data set. The following are possible research questions:
 
 1.  Which predictors can explain the variation in the IQ scores of the students? (**conduct hypothesis tests for individually testing whether each slope could be 0.**)
-2.  What is the effect of brain size on student IQ scores, after considering height and weight? (**Calculate and inerprete a confidence interval for the brain size slope parameter)**
+2.  What is the effect of brain size on student IQ scores, after considering height and weight? (**Calculate and interpret a confidence interval for the brain size slope parameter)**
 3.  What is the PIQ of an individual with a given brain size, height, and weight? **(Calculate and interpret a prediction interval for the response)**
 
 ## Regression Model
@@ -181,9 +175,9 @@ ggplot(df2,
 
 A regression model for this problem is stated below
 
-$$
+\$\$
 
-$$
+\$\$
 
 $$
 y_{i} = \beta_{0} +\beta_{1}x_{i1} +\beta_{2}x_{i2} + \epsilon_{i}
@@ -195,9 +189,9 @@ Where:
 
 -   $x_{i1} \text{ percentage of oxygen exposed to nestling bank swallow}_i$
 
--   $ x_{i2} \text{ percentage of Carbon dioxide exposed to nestling bank swallow}_i $
+-   \$ x\_{i2} \text{ percentage of Carbon dioxide exposed to nestling bank swallow}\_i \$
 
--   $ \epsilon_i \text{ is the independent error term that is normally distributed about 0 with equal variance } \sigma^2 $
+-   \$ \epsilon\_i \text{ is the independent error term that is normally distributed about 0 with equal variance } \sigma\^2 \$
 
 **Research Question**
 
@@ -212,3 +206,133 @@ Where:
 df2.regression <- lm(Vent ~ O2+CO2, data=df2)
 summary(df2.regression)
 ```
+
+## General Linear F-Test
+
+This test is a three step approach:
+
+1.  Define a larger **full model** (larger - a model with more parameters)
+2.  Define a smaller **reduced model** (smaller - a model with fewer parameters)
+3.  Use an **f-statistic** to decide on whether or not to reject the smaller reduced model in favour of the larger model.
+
+### Full Model
+
+This is sometimes referred to as the **unrestricted model,** and is considered to be the most appropriate for available data. In simple linear regression, the full model:
+
+$$
+y_{i} = (\beta_{0} + \beta_{1}x_{i1}) + \epsilon_{i}
+$$
+
+### Reduced model
+
+This is referred to as the **restricted model** and is the model that is described by the null hypothesis $H_{0}$. In SLR, the common null hypothesis is $H_{0}:\beta_{1}=0$, i.e., there is no relationship between the response and predictor variable. The reduced model is:
+
+$$y_{i} = \beta_{0}+\epsilon_{i}$$
+
+### Test
+
+A test is used to determine which model between the reduced model and the full model performs better in describing the data trend when it cannot be determined by a plot. This test involves quantifying the error that remains after fitting each of the two models to the data. This involves performing the **general linear F-test approach:**
+
+1.  **"fit dull model"** to the data
+    1.  Calculate the least square estimates of $\beta_{0} \text{ and } \beta_{1}$.
+    2.  Calculate the error sum of squares, which is denoted as "SSE(F)"
+2.  "**fit the reduced model"** to the data
+    1.  obtain the least squares estimate of $\beta_{0}$
+    2.  Calculate the error sum of squares, which is denoted as "SSE(R)"
+
+### Examples
+
+```{r}
+df3 <- read_table(here::here("IQ_vs_Physical_Characteristics/data/raw/heightgpdata.txt"))
+# show first few observations
+head(df3)
+```
+
+```{r}
+head(df3)
+```
+
+```{r}
+#| label: fig-scatter-matrix4
+#| fig-cap: Scatter-plot matrix showing the pair-wise relationship between the variables of the dataset.
+df3 |> ggpairs(
+  columns = c("height","gpa" ),
+  upper = list(continuous = wrap("cor", size= 8))
+) 
+```
+
+Lets now plot the 3rd graph with two estimated regression lines - full model and reduced model.
+
+```{r}
+# create linear regression model
+lm_fit <- lm(gpa~height, data=df3)
+summary(lm_fit)
+
+```
+
+```{r}
+# create a new data frame that contains the independent variable - height, true value and predicted values of the dependent variable
+df3_predict = data.frame(
+  height = df3$height,
+  gpa_true = df3$gpa,
+  gpa_pred_full = predict(lm_fit, df3),
+  gpa_pred_reduced = mean(df3$gpa)
+)
+# show the first few observations of the new dataframe
+head(df3_predict)
+```
+
+```{r}
+
+ggplot(
+  df3, aes(
+    x=height,
+    y=gpa)) +
+  geom_point()+
+  geom_line(
+    color="black",
+    data=df3_predict,
+    aes(
+      x=height,
+      y = gpa_pred_full
+    )
+  )+
+  geom_line(
+    linetype = "dashed",
+    color="black",
+    data=df3_predict,
+    aes(
+      x=height,
+      y = gpa_pred_reduced
+    )
+  )
+```
+
+The estimated lines are quite similar and now to calculate the error sum of squares for each model.
+
+```{r}
+df3_predict$SSE_full <- (df3_predict$gpa_true-df3_predict$gpa_pred_full)^2
+df3_predict$SSE_reduced <- (df3_predict$gpa_true-df3_predict$gpa_pred_reduced)^2
+sum(df3_predict$SSE_full)
+sum(df3_predict$SSE_reduced)
+```
+
+The two error sum of squares for each model are different by 0.0276, this means that there is little change created in the prediction of GPA when the `height` variable is included in the model. The following can be used to summarize why we use the general linear F-test approach:
+
+-   The general linear F-test involves a comparison between SSE(R) and SSE(F).
+
+-   SSE(R) can never be smaller than SSE(F). It is always larger than (or possibly the same as) SSE(F).
+
+    -   If the SSE(F) and the SSE(R) are close, then the variation around the estimated full model regression function is almost as large as the variation around the estimated reduced model regression function. In that case, the simpler reduced model should be used.
+
+    -   If the SSE(F) and SSE(R) are far apart, then the additional parameters reduce the variation around the estimated regression function, then it is advised to use the larger full model.
+
+The **general linear F-statistic** is used to justify how different the SSE(R) has to be from the SSE(F)
+
+$$
+F^{*} =  (\frac{SSE(R) -SSE(F)}{df_{R} - df_{F}}) \div (\frac{SSE(F)}{df_{F}})
+$$
+
+The **general linear F-statistic** is used to decide whether or not to reject the null hypothesis $H_{0}$: the reduce model in favour of the alternative hypothesis $H_{a}$: the full model.
+
+**In general,** the $H_{O}$ is rejected if $F^{*}$ is large - or equivalently if its associated P-value is small.
